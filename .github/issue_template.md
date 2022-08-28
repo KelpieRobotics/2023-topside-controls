@@ -1,7 +1,7 @@
 ## Kelpie Robotics - Topside Controls
 
 
-[feature/bugfix/test/docs]: description, scope of changes that need to be made.
+[feature/bugfix/test/docs]: description, the scope of changes that need to be made.
 
 🎟️ Associated ticket: 
 

@@ -2,8 +2,8 @@
 
 name: Generate Doxygen
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# Controls when the action will run. Triggers the workflow on push
+# events but only for the main branch
 on:
   push:
     branches: [ main ]
@@ -30,7 +30,7 @@ jobs:
         # Working directory
         working-directory: "." # default is .
     
-    - name: Deploy
+    - name: Deploy Doxygen
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

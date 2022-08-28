@@ -16,6 +16,6 @@
 - [ ] 🧪 (For feature/bugfix): Has been integration tested
 
 ## 🔍 Reviewer 
-- [ ] 👁️ Verified that code changes meet scope
-- [ ] 👓 Verified self review
+- [ ] 👁️ Verified that code changes meet the scope
+- [ ] 👓 Verified self-review
 - [ ] ✨ Verified integration testing (when applicable)

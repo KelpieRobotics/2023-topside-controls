@@ -1,6 +1,6 @@
-Kelpie Robotics - Topside Controls
+## Kelpie Robotics - Topside Controls
 
-[feature/bugfix/test/docs]: description of change made to code. 
+[feature/bugfix/test/docs]: description of changes made to code. 
 
 ### 🔑 Key Changes
 - 

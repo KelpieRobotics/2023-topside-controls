@@ -8,11 +8,10 @@
 🔒 Task Issuer: 
 
 ### ✅ Requirements for completion
-- 
 -
 
 ### ✨ Nice to haves
 -
--
 
 ### 📔 Additional Notes:
+-

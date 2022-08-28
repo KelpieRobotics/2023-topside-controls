@@ -14,6 +14,7 @@
 - [ ] 🔁 Has been written with code-reusability in mind
 - [ ] 💯 Code compiles and meets standards for this repository
 - [ ] 🧪 (For feature/bugfix): Has been integration tested
+
 ## 🔍 Reviewer 
 - [ ] 👁️ Verified that code changes meet scope
 - [ ] 👓 Verified self review

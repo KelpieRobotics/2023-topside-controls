@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UxNkT1lY7SODFNvDlN85gdXsUQ7L4qmu80OysxMzUGxPJLwdenCW1ZoeUgSAgd0ehw33GX7Ir2efIIhUdD4fEQ==",
+  "dgSpecHash": "qb8LMo9bjDlAPlx/6aXASN2aoNhAdQLiTiV1kUAMLVh8SPxmYnPBkTNHq+UhMuUMJrIlu+VbWnMqQQPDzwTtvw==",
   "success": true,
-  "projectFilePath": "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\NetworkClient.csproj",
+  "projectFilePath": "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

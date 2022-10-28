@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\NetworkClient.csproj": {}
+    "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj": {}
   },
   "projects": {
-    "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\NetworkClient.csproj": {
+    "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\NetworkClient.csproj",
+        "projectUniqueName": "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj",
         "projectName": "NetworkClient",
-        "projectPath": "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\NetworkClient.csproj",
-        "packagesPath": "C:\\Users\\jhied012\\.nuget\\packages\\",
-        "outputPath": "G:\\Code\\Kelpie\\topside-controls\\networking-client\\NetworkClient\\obj\\",
+        "projectPath": "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj",
+        "packagesPath": "C:\\Users\\Adam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\jhied012\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Adam\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -61,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

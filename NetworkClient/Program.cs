@@ -1,9 +1,10 @@
-﻿using System.Net.Sockets;
+﻿using System.Net;
+using System.Net.Sockets;
 using System.Text;
 
 using var client = new TcpClient();
 
-var hostname = "10.192.77.99";
+IPAddress hostname = IPAddress.Parse("10.192.77.99");
 client.Connect(hostname, 9999);
 
 using NetworkStream stream = client.GetStream();

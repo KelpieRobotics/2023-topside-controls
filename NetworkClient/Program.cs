@@ -5,7 +5,7 @@ using System.Text;
 
 class Ignore
 {
-	void whatever()
+	void whatever() // this will never run, just for reference
 	{
 		using var client = new TcpClient();
 

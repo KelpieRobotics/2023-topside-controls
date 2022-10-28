@@ -32,6 +32,7 @@ public class TcpServerHandler
             {
                 server = new TcpListener(localHost, port);
                 server.Start();
+                Console.WriteLine("Started server successfully on port " + port);
             }
             catch (SocketException e)
             {

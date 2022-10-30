@@ -8,6 +8,7 @@ using System.Text;
 
 namespace NetworkClient;
 
+
 public class TcpServerHandler
 {
     private int port; // port the server will be listening in on
@@ -20,11 +21,18 @@ public class TcpServerHandler
     private TcpClient client = null; // object that will keep track of our client (the pi)
     private NetworkStream stream = null;
 
+    /// <summary>
+    /// Instantiate a new server with port <c>prt</c>
+    /// </summary>
+    /// <param name="prt"></param>
     public TcpServerHandler(int prt)
     {
         port = prt;
     }
 
+    /// <summary>
+    /// Start the TCP server if one is not already running
+    /// </summary>
     public void StartServer()
     {
         // Make sure there isnt already a server running
@@ -70,6 +78,9 @@ public class TcpServerHandler
 
     }
 
+    /// <summary>
+    /// Accept any incoming clients, must be called AFTER <c>TcpServerHandler.StartServer()</c>
+    /// </summary>
     public void Connect()
     {   
         // Make sure the server is up before you attempt to accept a client
@@ -101,6 +112,10 @@ public class TcpServerHandler
         }
     }
 
+    /// <summary>
+    /// Receive any pending bytes from the client
+    /// </summary>
+    /// <returns>A string with the message from the client</returns>
     public string Receive()
     {
         string message = "";

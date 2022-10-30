@@ -11,9 +11,10 @@ namespace NetworkClient;
 public class TcpServerHandler
 {
     private int port; // port the server will be listening in on
-    private IPAddress localHost = IPAddress.Parse("127.0.0.1"); // gets the local ip of the server
+    //private IPAddress localHost = IPAddress.Parse("127.0.0.1"); // gets the local ip of the server
 
     private bool serverIsUp = false;
+    private bool clientIsConnected = false;
 
     private TcpListener server = null;
     private TcpClient client = null; // object that will keep track of our client (the pi)
@@ -30,9 +31,10 @@ public class TcpServerHandler
         {
             try
             {
-                server = new TcpListener(localHost, port);
+                server = new TcpListener(IPAddress.Any, port);
                 server.Start();
-                Console.WriteLine("Started server successfully on port " + port);
+                serverIsUp = true;
+                Console.WriteLine("Listening on port " + port);
             }
             catch (SocketException e)
             {
@@ -50,12 +52,14 @@ public class TcpServerHandler
     {
         if (serverIsUp)
         {
-            if (client != null)
+            if (clientIsConnected)
             {
                 client.Close();
             }
 
             server.Stop();
+            serverIsUp = false;
+            Console.WriteLine("Closed server");
 
         }
         else
@@ -67,17 +71,26 @@ public class TcpServerHandler
 
     public void Connect()
     {
-        while (client == null)
+        if (serverIsUp)
         {
-            client = server.AcceptTcpClient();
+            if (!clientIsConnected)
+            {
+                Console.WriteLine("Looking for client...");
+                client = server.AcceptTcpClient();
+                clientIsConnected = true;
+            }
+            stream = client.GetStream();
+            Console.WriteLine("Connected to " + client);
+        } else
+        {
+            Console.WriteLine("Must open server before you can accept connections!");
         }
-        stream = client.GetStream();
-        Console.WriteLine("Connected to " + client);
+        
     }
 
     public void Send(String message)
     {
-        if (client != null)
+        if (clientIsConnected)
         {
             byte[] sendBytes = Encoding.ASCII.GetBytes(message);
             stream.Write(sendBytes, 0, sendBytes.Length);
@@ -88,7 +101,7 @@ public class TcpServerHandler
     {
         string message = "";
         byte[] receiveByte = new byte[1024];
-        if (client != null)
+        if (clientIsConnected)
         {
             int i;
             while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)

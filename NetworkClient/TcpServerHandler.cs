@@ -27,6 +27,7 @@ public class TcpServerHandler
 
     public void StartServer()
     {
+        // Make sure there isnt already a server running
         if (!serverIsUp)
         {
             try
@@ -50,17 +51,17 @@ public class TcpServerHandler
 
     public void StopServer()
     {
+        // Make sure there is a server running before you try to stop said server
         if (serverIsUp)
         {
+            // But before that, close the connection with the client
             if (clientIsConnected)
             {
                 client.Close();
             }
-
             server.Stop();
             serverIsUp = false;
             Console.WriteLine("Closed server");
-
         }
         else
         {
@@ -70,17 +71,20 @@ public class TcpServerHandler
     }
 
     public void Connect()
-    {
+    {   
+        // Make sure the server is up before you attempt to accept a client
         if (serverIsUp)
         {
-            if (!clientIsConnected)
+            // If there currently is no connected client, proceed with connecting them
+            if (!clientIsConnected) 
             {
                 Console.WriteLine("Looking for client...");
                 client = server.AcceptTcpClient();
                 clientIsConnected = true;
             }
             stream = client.GetStream();
-            Console.WriteLine("Connected to " + client);
+            // Confirm connection and print clients IP
+            Console.WriteLine("Connected to " + client.Client.RemoteEndPoint);
         } else
         {
             Console.WriteLine("Must open server before you can accept connections!");
@@ -109,8 +113,7 @@ public class TcpServerHandler
                message = Encoding.ASCII.GetString(receiveByte, 0, i);
                 return message;
             }
-            return message;
-
+            return "";
         }
         else
         {

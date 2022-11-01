@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Net;
 using System.Threading;
 using System.Text;
+using System.Net.NetworkInformation;
+using System.ComponentModel;
 
 namespace NetworkClient;
 
@@ -20,6 +22,8 @@ public class TcpServerHandler
     private TcpListener server = null;
     private TcpClient client = null; // object that will keep track of our client (the pi)
     private NetworkStream stream = null;
+    private Ping pinger = new Ping();
+    private IPEndPoint clientHost;
 
     /// <summary>
     /// Instantiate a new server with port <c>prt</c>
@@ -44,6 +48,10 @@ public class TcpServerHandler
                 server.Start();
                 serverIsUp = true;
                 Console.WriteLine("Listening on port " + port);
+
+                Thread receiveThread = new Thread(Receive);
+
+                receiveThread.Start();
             }
             catch (SocketException e)
             {
@@ -82,24 +90,27 @@ public class TcpServerHandler
     /// Accept any incoming clients, must be called AFTER <c>TcpServerHandler.StartServer()</c>
     /// </summary>
     public void Connect()
-    {   
-        // Make sure the server is up before you attempt to accept a client
-        if (serverIsUp)
-        {
-            // If there currently is no connected client, proceed with connecting them
-            if (!clientIsConnected) 
+    { 
+        
+            // Make sure the server is up before you attempt to accept a client
+            if (serverIsUp)
             {
-                Console.WriteLine("Looking for client...");
-                client = server.AcceptTcpClient();
-                clientIsConnected = true;
+                // If there currently is no connected client, proceed with connecting them
+                if (!clientIsConnected)
+                {
+                    Console.WriteLine("Looking for client...");
+                    client = server.AcceptTcpClient();
+                    clientIsConnected = true;
+                    stream = client.GetStream();
+                    clientHost = client.Client.RemoteEndPoint as IPEndPoint;
+                    Console.WriteLine("Connected to " + clientHost.Address);
+                }
             }
-            stream = client.GetStream();
-            // Confirm connection and print clients IP
-            Console.WriteLine("Connected to " + client.Client.RemoteEndPoint);
-        } else
-        {
-            Console.WriteLine("Must open server before you can accept connections!");
-        }
+            else
+            {
+                Console.WriteLine("Must open server before you can accept connections!");
+            }
+            //Thread.Sleep(3000);
         
     }
 
@@ -116,23 +127,34 @@ public class TcpServerHandler
     /// Receive any pending bytes from the client
     /// </summary>
     /// <returns>A string with the message from the client</returns>
-    public string Receive()
+    public void Receive()
     {
-        string message = "";
-        byte[] receiveByte = new byte[1024];
-        if (clientIsConnected)
+        if (serverIsUp)
         {
-            int i;
-            while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
+            string message = "";
+            byte[] receiveByte = new byte[1024];
+            while (true)
             {
-               message = Encoding.ASCII.GetString(receiveByte, 0, i);
-                return message;
+                if (clientIsConnected)
+                {
+                    int i;
+                    while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
+                    {
+                        message = Encoding.ASCII.GetString(receiveByte, 0, i);
+                        //return message;
+                        Console.WriteLine(message);
+                    }
+                    clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
+                    if (clientIsConnected == false)
+                    {
+                        Console.WriteLine("Lost connection to client!");
+                    }
+                }
+                else
+                {
+                    Connect();
+                }
             }
-            return "";
-        }
-        else
-        {
-            return "No client to receive from";
         }
     }
 }

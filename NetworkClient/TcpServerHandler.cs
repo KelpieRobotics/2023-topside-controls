@@ -19,11 +19,13 @@ public class TcpServerHandler
     private bool serverIsUp = false;
     private bool clientIsConnected = false;
 
-    private TcpListener server = null;
-    private TcpClient client = null; // object that will keep track of our client (the pi)
-    private NetworkStream stream = null;
+    private TcpListener server;
+    private TcpClient client; // object that will keep track of our client (the pi)
+    private NetworkStream stream;
     private Ping pinger = new Ping();
     private IPEndPoint clientHost;
+
+    public List<string> messagesReceived = new();
 
     /// <summary>
     /// Instantiate a new server with port <c>prt</c>
@@ -40,87 +42,80 @@ public class TcpServerHandler
     public void StartServer()
     {
         // Make sure there isnt already a server running
-        if (!serverIsUp)
-        {
-            try
-            {
-                server = new TcpListener(IPAddress.Any, port);
-                server.Start();
-                serverIsUp = true;
-                Console.WriteLine("Listening on port " + port);
-
-                Thread receiveThread = new Thread(Receive);
-
-                receiveThread.Start();
-            }
-            catch (SocketException e)
-            {
-                Console.WriteLine("Failed to start server!");
-                Console.WriteLine(e);
-            }
-        }
-        else
+        if (serverIsUp)
         {
             Console.WriteLine("Server is already running!");
+            return;
+        }
+
+        try
+        {
+            server = new TcpListener(IPAddress.Any, port);
+            server.Start();
+            serverIsUp = true;
+            Console.WriteLine("Listening on port " + port);
+
+            Thread receiveThread = new Thread(Receive);
+
+            receiveThread.Start();
+        }
+        catch (SocketException e)
+        {
+            Console.WriteLine("Failed to start server!");
+            Console.WriteLine(e);
         }
     }
 
     public void StopServer()
     {
         // Make sure there is a server running before you try to stop said server
-        if (serverIsUp)
-        {
-            // But before that, close the connection with the client
-            if (clientIsConnected)
-            {
-                client.Close();
-            }
-            server.Stop();
-            serverIsUp = false;
-            Console.WriteLine("Closed server");
-        }
-        else
+        if (!serverIsUp)
         {
             Console.WriteLine("No server running to stop!");
+            return;
         }
-
+        // But before that, close the connection with the client
+        if (clientIsConnected)
+        {
+            client.Dispose();
+        }
+        server.Stop();
+        serverIsUp = false;
+        Console.WriteLine("Closed server");
     }
 
     /// <summary>
     /// Accept any incoming clients, must be called AFTER <c>TcpServerHandler.StartServer()</c>
     /// </summary>
     public void Connect()
-    { 
-        
-            // Make sure the server is up before you attempt to accept a client
-            if (serverIsUp)
-            {
-                // If there currently is no connected client, proceed with connecting them
-                if (!clientIsConnected)
-                {
-                    Console.WriteLine("Looking for client...");
-                    client = server.AcceptTcpClient();
-                    clientIsConnected = true;
-                    stream = client.GetStream();
-                    clientHost = client.Client.RemoteEndPoint as IPEndPoint;
-                    Console.WriteLine("Connected to " + clientHost.Address);
-                }
-            }
-            else
-            {
-                Console.WriteLine("Must open server before you can accept connections!");
-            }
-            //Thread.Sleep(3000);
-        
+    {
+
+        // Make sure the server is up before you attempt to accept a client
+        if (!serverIsUp)
+        {
+            Console.WriteLine("Must open server before you can accept connections!");
+            return;
+        }
+
+        Console.WriteLine("Looking for client...");
+        client = server.AcceptTcpClient();
+        clientIsConnected = true;
+        stream = client.GetStream();
+        clientHost = (IPEndPoint)client.Client.LocalEndPoint;
+        Console.WriteLine("Connected to " + clientHost.Address);
+        //Thread.Sleep(3000);
+
     }
 
     public void Send(String message)
     {
-        if (clientIsConnected)
+        if (!clientIsConnected || !serverIsUp)
         {
-            byte[] sendBytes = Encoding.ASCII.GetBytes(message);
-            stream.Write(sendBytes, 0, sendBytes.Length);
+            Console.WriteLine("No client connected!");
+            return;
         }
+        byte[] sendBytes = Encoding.ASCII.GetBytes(message);
+        stream.Write(sendBytes, 0, sendBytes.Length);
     }
 
     /// <summary>
@@ -129,32 +124,35 @@ public class TcpServerHandler
     /// <returns>A string with the message from the client</returns>
     public void Receive()
     {
-        if (serverIsUp)
+        if (!serverIsUp)
         {
-            string message = "";
-            byte[] receiveByte = new byte[1024];
-            while (true)
+            Console.WriteLine("There is no server running!");
+            return;
+        }
+        string message;
+        byte[] receiveByte = new byte[1024];
+        while (true)
+        {
+            if (!clientIsConnected)
             {
-                if (clientIsConnected)
-                {
-                    int i;
-                    while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
-                    {
-                        message = Encoding.ASCII.GetString(receiveByte, 0, i);
-                        //return message;
-                        Console.WriteLine(message);
-                    }
-                    clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
-                    if (clientIsConnected == false)
-                    {
-                        Console.WriteLine("Lost connection to client!");
-                    }
-                }
-                else
-                {
-                    Connect();
-                }
+                Connect();
             }
+            int i;
+            while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
+            {
+                message = Encoding.ASCII.GetString(receiveByte, 0, i);
+                message = message.Trim();
+                //return message;
+                messagesReceived.Add(message);
+                Console.WriteLine($"Message from Client #{messagesReceived.Count}: {message}");
+            }
+            clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
+
+            if (clientIsConnected) continue;
+            
+            Console.WriteLine("Lost connection to client!");
+            stream.Dispose();
+            
         }
     }
 }

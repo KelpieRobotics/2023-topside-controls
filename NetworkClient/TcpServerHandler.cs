@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text;
 using System.Net.NetworkInformation;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace NetworkClient;
 
@@ -87,6 +88,45 @@ public class TcpServerHandler
     /// <summary>
     /// Accept any incoming clients, must be called AFTER <c>TcpServerHandler.StartServer()</c>
     /// </summary>
+    public Boolean Data(String msg){
+        String[] msg1 = msg.Split(" ");
+        if (msg1.Length != 3 || msg[0] != '#' || msg[msg.Length - 1] != '!')
+        {
+            Console.WriteLine("invalid data");
+            return false;
+        }
+        else if (!sensor(msg1[0].Trim('#')))
+        {
+            Console.WriteLine("invalid sensor");
+            return false;
+        }
+        else if (!Regex.IsMatch(msg1[1], @"^[0-9]+$")) {
+
+            Console.WriteLine("invalid sensor data1");
+            return false;
+        }
+        else if (!Regex.IsMatch(msg1[2].Trim('!'), @"^[0-9,.]+$"))
+        {
+            Console.WriteLine("invalid sensor data2");
+            return false;
+        }
+        else if (Int16.Parse(msg1[1].ToString()) != msg1[2].Trim('!').ToString().Length)
+        {
+            Console.WriteLine("invalid bytes in data");
+            return false;
+        }
+        return true;
+    }
+    public Boolean sensor(String sensor)
+    {
+        HashSet<String> tags = new HashSet<string> {"SENSORS", "SAFETY", "DEBUG"};
+        if (!tags.Contains(sensor))
+        {
+            return false;
+        }
+        
+        return true;
+    }
     public void Connect()
     {
 
@@ -138,16 +178,27 @@ public class TcpServerHandler
                 Connect();
             }
             int i;
-            while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
-            {
-                message = Encoding.ASCII.GetString(receiveByte, 0, i);
-                message = message.Trim();
-                //return message;
-                messagesReceived.Add(message);
-                Console.WriteLine($"Message from Client #{messagesReceived.Count}: {message}");
-            }
-            clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
 
+            try
+            {
+                while ((i = stream.Read(receiveByte, 0, receiveByte.Length)) != 0)
+                {
+                    message = Encoding.ASCII.GetString(receiveByte, 0, i);
+                    if (Data(message))
+                    {
+                        messagesReceived.Add(message);
+                        Console.WriteLine(message);
+                        //Console.WriteLine($"Message from Client #{messagesReceived.Count}: {message}");
+                    }
+                }
+            }
+            catch (IOException)
+            {
+                clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
+            }
+
+
+            clientIsConnected = client.Client.Poll(0, SelectMode.SelectError);
             if (clientIsConnected) continue;
             
             Console.WriteLine("Lost connection to client!");

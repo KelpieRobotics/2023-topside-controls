@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "qb8LMo9bjDlAPlx/6aXASN2aoNhAdQLiTiV1kUAMLVh8SPxmYnPBkTNHq+UhMuUMJrIlu+VbWnMqQQPDzwTtvw==",
+  "dgSpecHash": "U6ARLh8dF9wVPJOhinE4EFxUSSW5KYYh/HPTQLQZvLxLmWuDJ+hRDdq3FMJpUkCj1iYPuWMj2qReWKw/hUA89g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Adam\\Documents\\Projects\\Kelpie\\Software\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj",
+  "projectFilePath": "C:\\Kaplie Robotics\\2023-topside-controls\\NetworkClient\\NetworkClient.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
